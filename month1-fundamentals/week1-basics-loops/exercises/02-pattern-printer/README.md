@@ -1,0 +1,1 @@
+# Exercise 01: Pattern Printer

@@ -1,6 +1,7 @@
-#include &lt;stdio.h&gt;
+#include <stdio.h>
 
 int main() {
     // TODO: Implement student database
     return 0;
 }
+

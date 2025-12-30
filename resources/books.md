@@ -1,1 +1,0 @@
-# Recommended Books for C Embedded Programming

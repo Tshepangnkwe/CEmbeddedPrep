@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 int main() {
-    // TODO: Implement modular library
+    // Function writing drill
     return 0;
 }
 

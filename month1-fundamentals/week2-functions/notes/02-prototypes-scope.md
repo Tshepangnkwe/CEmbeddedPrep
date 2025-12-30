@@ -1,9 +1,161 @@
-# 03: Scope and Lifetime
+# 02: Prototypes, Scope and Lifetime
 
-## Variable Scope
+## Function Prototypes
+
+### What is a Function Prototype?
+A function prototype declares the function's interface without providing the implementation. It tells the compiler:
+- Function name
+- Return type
+- Parameter types and names (names optional)
+
+### Why Prototypes?
+- Allow calling functions before they're defined
+- Enable separate compilation
+- Help catch type mismatches at compile time
+- Improve code organization
+
+### Prototype Syntax
+```c
+return_type function_name(parameter_types);
+```
+
+#### Examples
+```c
+// Basic prototype
+int add(int, int);
+
+// With parameter names (recommended for clarity)
+int add(int a, int b);
+
+// Void function
+void print_message(void);
+
+// Function returning pointer
+char* get_name(void);
+
+// Complex parameters
+double calculate(int count, double values[]);
+```
+
+### Prototype vs Definition
+```c
+// Prototype (declaration)
+int multiply(int a, int b);
+
+// Definition (implementation)
+int multiply(int a, int b) {
+    return a * b;
+}
+```
+
+### Placement
+#### Option 1: Before main
+```c
+#include <stdio.h>
+
+int add(int, int);  // Prototype
+
+int main() {
+    printf("%d\n", add(2, 3));
+    return 0;
+}
+
+int add(int a, int b) {  // Definition
+    return a + b;
+}
+```
+
+#### Option 2: Header Files
+```c
+// math.h
+#ifndef MATH_H
+#define MATH_H
+
+int add(int a, int b);
+int subtract(int a, int b);
+
+#endif
+```
+
+```c
+// math.c
+int add(int a, int b) {
+    return a + b;
+}
+
+int subtract(int a, int b) {
+    return a - b;
+}
+```
+
+```c
+// main.c
+#include "math.h"
+
+int main() {
+    printf("%d\n", add(5, 3));
+    return 0;
+}
+```
+
+### Parameter Name Rules
+- Parameter names in prototypes are optional
+- If included, they should match the definition
+- They help with documentation
+
+```c
+// Valid (names optional)
+int divide(int, int);
+int divide(int dividend, int divisor);
+
+// But should match definition
+int divide(int dividend, int divisor) {
+    return dividend / divisor;
+}
+```
+
+### Default Arguments
+C doesn't support default arguments like C++:
+```c
+// This won't work in C
+void func(int x = 5) { }
+
+// Instead, use function overloading simulation
+void func(void) { func_with_default(5); }
+void func_with_default(int x) { /* implementation */ }
+```
+
+### Function Overloading
+C doesn't support function overloading:
+```c
+// This won't work in C
+int add(int a, int b) { return a + b; }
+double add(double a, double b) { return a + b; }
+
+// Instead, use different names
+int add_int(int a, int b) { return a + b; }
+double add_double(double a, double b) { return a + b; }
+```
+
+### Best Practices
+- Always provide prototypes for functions
+- Use header files for multi-file programs
+- Include parameter names in prototypes for clarity
+- Group related function prototypes together
+- Use include guards in header files
+
+### Common Mistakes
+- Missing prototypes (causes implicit int return)
+- Parameter type mismatches
+- Forgetting to include header files
+- Circular dependencies in headers
+
+## Scope and Lifetime
+
+### Variable Scope
 Scope determines where a variable can be accessed in the program.
 
-### Global Scope
+#### Global Scope
 Variables declared outside all functions are global:
 ```c
 #include <stdio.h>
@@ -21,7 +173,7 @@ int main() {
 }
 ```
 
-### Local Scope
+#### Local Scope
 Variables declared inside functions are local:
 ```c
 void func() {
@@ -35,7 +187,7 @@ int main() {
 }
 ```
 
-### Block Scope
+#### Block Scope
 Variables declared inside blocks (between {}) have block scope:
 ```c
 int main() {
@@ -51,10 +203,10 @@ int main() {
 }
 ```
 
-## Variable Lifetime
+### Variable Lifetime
 Lifetime determines how long a variable exists in memory.
 
-### Static Lifetime
+#### Static Lifetime
 - Global variables: exist for entire program
 - Static local variables: exist for entire program but accessible only in function
 
@@ -73,7 +225,7 @@ int main() {
 }
 ```
 
-### Automatic Lifetime
+#### Automatic Lifetime
 Local variables without `static` have automatic lifetime:
 ```c
 void func() {
@@ -88,8 +240,8 @@ int main() {
 }
 ```
 
-## Storage Classes
-### auto
+### Storage Classes
+#### auto
 - Default for local variables
 - Automatic lifetime
 - Local scope
@@ -101,7 +253,7 @@ int main() {
 }
 ```
 
-### static
+#### static
 - Preserves value between function calls
 - Internal linkage for global static
 - External linkage for global non-static
@@ -117,7 +269,7 @@ void func() {
 }
 ```
 
-### extern
+#### extern
 - Declares variable defined elsewhere
 - Used for global variables across files
 
@@ -133,7 +285,7 @@ void func() {
 }
 ```
 
-### register
+#### register
 - Hint to compiler to store in register
 - Faster access but limited
 - Cannot take address
@@ -145,8 +297,8 @@ void func() {
 }
 ```
 
-## Scope Rules
-### Shadowing
+### Scope Rules
+#### Shadowing
 Inner scope variables can shadow outer scope:
 ```c
 int x = 10;
@@ -165,7 +317,7 @@ int main() {
 }
 ```
 
-### No Cross-Function Access
+#### No Cross-Function Access
 Functions cannot access each other's local variables:
 ```c
 void func1() {
@@ -177,14 +329,14 @@ void func2() {
 }
 ```
 
-## Best Practices
+### Best Practices
 - Minimize global variables
 - Use static for variables that need to persist
 - Declare variables in smallest possible scope
 - Use meaningful names to avoid shadowing
 - Initialize static variables to zero if needed
 
-## Common Mistakes
+### Common Mistakes
 - Using global variables when local would work
 - Forgetting static variables retain values
 - Shadowing important variables

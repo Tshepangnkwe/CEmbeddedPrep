@@ -1,6 +1,7 @@
-#include &lt;stdio.h&gt;
+#include <stdio.h>
 
 int main() {
     // Loop challenges
     return 0;
 }
+

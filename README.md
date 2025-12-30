@@ -168,6 +168,208 @@ CEmbeddedPrep/
 - Basic programming knowledge
 - Text editor or IDE
 
+### Development Environment Setup
+
+This guide covers setting up MSYS2, LLVM (Clang), and GCC on Windows for C development.
+
+#### MSYS2 Installation and Setup
+
+MSYS2 is a software distribution and building platform for Windows that provides a Unix-like environment with package management.
+
+**Step 1: Download MSYS2**
+1. Visit [msys2.org](https://www.msys2.org/)
+2. Download the latest `msys2-x86_64-*.exe` installer
+3. Run the installer with default settings (installs to `C:\msys64`)
+
+**Step 2: Initial Setup**
+1. Open "MSYS2 MSYS" from Start menu
+2. Update the package database and core system:
+   ```bash
+   pacman -Syu
+   ```
+3. Close the terminal when prompted, then reopen and run:
+   ```bash
+   pacman -Syu
+   ```
+
+**Step 3: Install Development Tools**
+```bash
+# Install GCC
+pacman -S mingw-w64-x86_64-gcc
+
+# Install Clang/LLVM
+pacman -S mingw-w64-x86_64-clang
+
+# Install additional tools
+pacman -S mingw-w64-x86_64-gdb      # Debugger
+pacman -S mingw-w64-x86_64-make     # Build system
+pacman -S mingw-w64-x86_64-cmake    # Build system
+```
+
+**Step 4: Add to PATH (Optional)**
+To use MSYS2 tools from any command prompt:
+1. Add `C:\msys64\mingw64\bin` to your Windows PATH
+2. Restart terminals/command prompts
+
+#### LLVM (Clang) Setup
+
+Clang is a compiler front-end for LLVM that can compile C, C++, and Objective-C.
+
+**Installation via MSYS2:**
+```bash
+pacman -S mingw-w64-x86_64-clang
+```
+
+**Key Features:**
+- Faster compilation than GCC in many cases
+- Better error messages and diagnostics
+- Extensive static analysis tools
+- Memory sanitizer and other debugging tools
+
+**Basic Usage:**
+```bash
+# Compile C file
+clang source.c -o output.exe
+
+# With debugging symbols
+clang -g source.c -o output.exe
+
+# Enable warnings
+clang -Wall -Wextra source.c -o output.exe
+```
+
+#### GCC Setup
+
+GCC (GNU Compiler Collection) is the most widely used C compiler.
+
+**Installation via MSYS2:**
+```bash
+pacman -S mingw-w64-x86_64-gcc
+```
+
+**Key Features:**
+- Industry standard for embedded development
+- Extensive optimization options
+- Strong support for embedded targets
+- Comprehensive documentation
+
+**Basic Usage:**
+```bash
+# Compile C file
+gcc source.c -o output.exe
+
+# With debugging symbols
+gcc -g source.c -o output.exe
+
+# Enable all warnings
+gcc -Wall -Wextra source.c -o output.exe
+
+# Optimize for size (good for embedded)
+gcc -Os source.c -o output.exe
+```
+
+#### Using Both Compilers
+
+**From MSYS2 Terminal:**
+Both compilers are available in the MSYS2 environment.
+
+**From Windows Command Prompt/PowerShell:**
+If added to PATH, use `gcc` or `clang` directly.
+
+**In VS Code:**
+Create `.vscode/tasks.json`:
+```json
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build with GCC",
+            "type": "shell",
+            "command": "gcc",
+            "args": ["-Wall", "-Wextra", "-g", "${file}", "-o", "${fileDirname}/${fileBasenameNoExtension}.exe"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Build with Clang",
+            "type": "shell",
+            "command": "clang",
+            "args": ["-Wall", "-Wextra", "-g", "${file}", "-o", "${fileDirname}/${fileBasenameNoExtension}.exe"],
+            "group": "build"
+        }
+    ]
+}
+```
+
+**In Makefiles:**
+```makefile
+# Choose compiler
+CC = gcc
+# CC = clang
+
+# Compilation flags
+CFLAGS = -Wall -Wextra -g
+
+# Build target
+target: source.c
+	$(CC) $(CFLAGS) source.c -o target.exe
+```
+
+#### Testing Your Setup
+
+Create `hello.c`:
+```c
+#include <stdio.h>
+
+int main() {
+    printf("Hello, World!\n");
+    return 0;
+}
+```
+
+**Test GCC:**
+```bash
+gcc hello.c -o hello_gcc.exe
+./hello_gcc.exe
+```
+
+**Test Clang:**
+```bash
+clang hello.c -o hello_clang.exe
+./hello_clang.exe
+```
+
+#### Troubleshooting
+
+**PATH Issues:**
+- Ensure `C:\msys64\mingw64\bin` is in PATH
+- Restart terminals after PATH changes
+
+**Missing Libraries:**
+```bash
+# Update packages
+pacman -Syu
+
+# Search for packages
+pacman -Ss package_name
+```
+
+**Permission Errors:**
+- Run MSYS2 as administrator for system-wide installs
+- Check antivirus exclusions for MSYS2 directory
+
+#### Recommended Workflow
+
+1. **Development:** Use MSYS2 terminal for most work
+2. **Default Compiler:** GCC for embedded-focused learning
+3. **Alternative:** Clang for faster compilation or better diagnostics
+4. **Debugging:** Use GDB from MSYS2
+5. **Building:** Makefiles or direct compilation
+
+For embedded development, GCC is more commonly used, but Clang is excellent for learning and general C programming.
+
 ## Resources
 
 - Embedded C books and tutorials
